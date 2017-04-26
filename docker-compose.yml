@@ -11,9 +11,27 @@ services:
     image: octoblu/meshblu-core-protocol-adapter-http:v5.4.8
     env_file: './meshblu-core-protocol-adapter-http.env'
     ports:
-      - "80:80"
+      - "1080:80"
     deploy:
-      replicas: 3
+      replicas: 1
+    networks:
+      - meshblu
+  websocket:
+    image: octoblu/meshblu-core-protocol-adapter-websocket:v4.1.2
+    env_file: './meshblu-core-protocol-adapter-websocket.env'
+    ports:
+      - "2080:80"
+    deploy:
+      replicas: 1
+    networks:
+      - meshblu
+  firehose:
+    image: octoblu/meshblu-core-firehose-socket.io:v1.4.8
+    env_file: './meshblu-core-firehose-socket.io.env'
+    ports:
+      - "3080:80"
+    deploy:
+      replicas: 1
     networks:
       - meshblu
   mongo:
