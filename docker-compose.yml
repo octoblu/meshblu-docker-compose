@@ -1,0 +1,47 @@
+version: '3'
+services:
+  dispatcher:
+    image: octoblu/meshblu-core-dispatcher:v19.0.1
+    env_file: './meshblu-core-dispatcher.env'
+    deploy:
+      replicas: 3
+    networks:
+      - meshblu
+  http:
+    image: octoblu/meshblu-core-protocol-adapter-http:v5.4.8
+    env_file: './meshblu-core-protocol-adapter-http.env'
+    ports:
+      - "80:80"
+    deploy:
+      replicas: 1
+    networks:
+      - meshblu
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo-data:/data/db
+    networks:
+      - meshblu
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/data
+    networks:
+      - meshblu
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - meshblu
+networks:
+  meshblu:
